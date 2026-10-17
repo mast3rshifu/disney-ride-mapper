@@ -4,7 +4,7 @@ on:
     branches: [main]
   workflow_dispatch:
 permissions:
-  contents: read
+  contents: write
   pages: write
   id-token: write
 concurrency:
@@ -21,6 +21,16 @@ jobs:
       - name: Build walkway map from OpenStreetMap
         run: node scripts/build-paths.mjs
         continue-on-error: true
+      # Keep the latest walkway map in the repo so a later deploy still has it if OpenStreetMap is busy.
+      - name: Save walkway map
+        run: |
+          if [ -f paths.json ] && [ -n "$(git status --porcelain paths.json)" ]; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add paths.json
+            git commit -m "Update walkway map from OpenStreetMap"
+            git push
+          fi
       - uses: actions/configure-pages@v5
         with:
           enablement: true

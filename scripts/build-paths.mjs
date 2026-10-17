@@ -12,12 +12,20 @@ out body;`;
 
 async function fetchOverpass() {
   const urls = ["https://overpass-api.de/api/interpreter", "https://overpass.kumi.systems/api/interpreter"];
-  for (const u of urls) {
-    try {
-      const res = await fetch(u, { method: "POST", body: "data=" + encodeURIComponent(QUERY), headers: { "content-type": "application/x-www-form-urlencoded" } });
-      if (res.ok) return await res.json();
-      console.warn(u, res.status);
-    } catch (e) { console.warn(u, e.message); }
+  const headers = {
+    "content-type": "application/x-www-form-urlencoded",
+    accept: "application/json",
+    "user-agent": "disney-ride-mapper/1.0 (https://github.com/mast3rshifu/disney-ride-mapper)",
+  };
+  for (let attempt = 0; attempt < 3; attempt++) {
+    for (const u of urls) {
+      try {
+        const res = await fetch(u, { method: "POST", body: "data=" + encodeURIComponent(QUERY), headers });
+        if (res.ok) return await res.json();
+        console.warn(u, res.status, (await res.text()).slice(0, 200));
+      } catch (e) { console.warn(u, e.message); }
+    }
+    await new Promise((r) => setTimeout(r, 15000 * (attempt + 1)));
   }
   throw new Error("Overpass unavailable");
 }
