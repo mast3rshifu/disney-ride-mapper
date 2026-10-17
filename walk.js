@@ -237,8 +237,9 @@ window.DRM_WALK = (function () {
     const map = new lib.Map({
       container: s.root.querySelector("#walkMap"), style: STYLE,
       center: [start.lng, start.lat], zoom: 18, pitch: 62, bearing: s.heading || 0,
-      maxPitch: 75, attributionControl: { compact: true },
+      maxPitch: 75, attributionControl: false,
     });
+    map.addControl(new lib.AttributionControl({ compact: true }), "top-right");
     s.map = map;
     const stopFollow = () => { if (!s) return; s.follow = false; s.root.querySelector("#walkRecenter").hidden = false; };
     map.on("dragstart", stopFollow);
@@ -324,7 +325,11 @@ window.DRM_WALK = (function () {
     } else {
       arrow.classList.remove("here");
       if (head == null) { arrow.style.transform = `rotate(${b}deg)`; say(`Head ${compassWord(b)}. Turn on the compass for turn-by-turn arrows.`); }
-      else { const r = rel(b - head); arrow.style.transform = `rotate(${r}deg)`; say(turnWords(r)); }
+      else {
+        const r = rel(b - head); arrow.style.transform = `rotate(${r}deg)`; say(turnWords(r));
+        const nx = s.root.querySelector("#walkNext");
+        if (Math.abs(r) >= 20 && /^In /.test(nx.textContent)) nx.textContent = "Then i" + nx.textContent.slice(1);
+      }
     }
     if (s.pos.acc > 40) s.root.querySelector("#walkNote").textContent = `GPS is fuzzy right now (about ${Math.round(s.pos.acc * 3.281)} ft). Tall buildings can do that.`;
 
