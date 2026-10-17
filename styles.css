@@ -170,3 +170,29 @@ main { padding: 4px max(16px, env(safe-area-inset-right, 0px)) 16px max(16px, en
 }
 @keyframes popin { from { transform: scale(.4); opacity: 0; } to { transform: scale(1); opacity: 1; } }
 @keyframes squish { 0%, 100% { transform: scale(1, 1); } 50% { transform: scale(1.08, .9); } }
+
+/* Walk mode */
+.walk { position: fixed; inset: 0; z-index: 30; background: var(--night); color: var(--night-ink); }
+.walk .walk-map { position: absolute; inset: 0; } /* beats maplibre-gl.css position: relative */
+.walk-map.nomap { display: grid; place-items: center; background: radial-gradient(circle at 50% 70%, #2a3a7a, var(--night)); }
+.nomap-msg { max-width: 260px; text-align: center; color: #c9cff0; font-size: 14px; margin-top: -30vh; }
+.walk-top { position: absolute; left: 0; right: 0; top: 0; display: flex; gap: 10px; align-items: center;
+  padding: calc(10px + env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) 10px max(16px, env(safe-area-inset-left, 0px));
+  background: linear-gradient(var(--night), rgba(29, 42, 92, 0)); }
+.walk-title { display: grid; min-width: 0; }
+.walk-title strong { font: 800 18px/1.15 var(--display); }
+.walk-title .muted { color: #c9cff0; }
+.walk-bottom { position: absolute; left: 0; right: 0; bottom: 0; display: grid; justify-items: center; gap: 8px; text-align: center;
+  padding: 18px max(16px, env(safe-area-inset-right, 0px)) calc(18px + env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px));
+  background: linear-gradient(rgba(29, 42, 92, 0), var(--night) 45%); }
+.walk-arrow { width: 96px; height: 96px; transition: transform .25s ease-out; }
+.walk-arrow svg { width: 100%; height: 100%; fill: var(--gold); filter: drop-shadow(0 4px 10px rgba(0, 0, 0, .4)); }
+.walk-arrow.here svg { fill: #4ccc85; }
+.walk-say { font: 800 24px/1.15 var(--display); }
+.walk-btns { display: flex; gap: 8px; }
+.walk .chip { background: rgba(255, 255, 255, .14); color: var(--night-ink); border-color: transparent; }
+.walk .chip.primary { background: var(--gold); color: #1b1300; }
+.walk-note { color: #c9cff0; max-width: 360px; }
+.walk-me { width: 20px; height: 20px; border-radius: 50%; background: #3b82f6; border: 3px solid #fff; box-shadow: 0 0 0 8px rgba(59, 130, 246, .25); }
+.walk-target .critter { display: block; filter: drop-shadow(0 4px 6px rgba(0, 0, 0, .35)); }
+@media (prefers-reduced-motion: reduce) { .walk-arrow { transition: none; } }

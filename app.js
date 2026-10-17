@@ -133,6 +133,7 @@
             if (!r || live[r.id]) continue;
             const q = e.queue || {};
             live[r.id] = {
+              entityId: e.id,
               status: e.status || "OPERATING",
               wait: q.STANDBY && typeof q.STANDBY.waitTime === "number" ? q.STANDBY.waitTime : null,
               ll: q.PAID_RETURN_TIME || q.RETURN_TIME || null,
@@ -423,14 +424,42 @@
       </div>
       ${r.heightIn && x.fit.length < state.kids.length ? `<p class="muted">Rider Switch: one grown-up waits with the shorter child while the others ride, then swaps without waiting again. Ask the cast member at the entrance.</p>` : ""}
       <div class="actions">
-        <button type="button" class="chip ${ridden ? "" : "primary"}" id="rodeBtn">${ridden ? "Undo rode it" : "We rode it"}</button>
+        <button type="button" class="chip primary" id="walkBtn">Walk there</button>
+        <button type="button" class="chip" id="rodeBtn">${ridden ? "Undo rode it" : "We rode it"}</button>
         <button type="button" class="chip" id="skipBtn">${skipped ? "Unskip" : "Skip this ride"}</button>
       </div>`;
     $("#povPrev").onclick = () => { povStep = Math.max(0, povStep - 1); drawRide(r); };
     $("#povNext").onclick = () => { povStep = Math.min(r.beats.length - 1, povStep + 1); drawRide(r); };
     $("#rodeBtn").onclick = () => { toggleIn(state.day.ridden, r.id); saveDay(); render(); drawRide(r); if (!ridden) { $("#rideDlg").close(); celebrate(r); } };
+    $("#walkBtn").onclick = () => { $("#rideDlg").close(); startWalk(r); };
     $("#skipBtn").onclick = () => { toggleIn(state.day.skipped, r.id); saveDay(); render(); drawRide(r); };
   }
+  // ---------- walk mode ----------
+  async function rideLocation(r) {
+    const cache = store.get("locs", {});
+    if (cache[r.id]) return cache[r.id];
+    const id = state.live[r.id] && state.live[r.id].entityId;
+    if (!id) return null;
+    try {
+      const e = await getJSON(`/entity/${id}`);
+      const loc = e.location && typeof e.location.latitude === "number" ? { lat: e.location.latitude, lng: e.location.longitude } : null;
+      if (loc) { cache[r.id] = loc; store.set("locs", cache); }
+      return loc;
+    } catch (err) { return null; }
+  }
+  function startWalk(r) {
+    if (!window.DRM_WALK) { toast("Walking map isn't available right now."); return; }
+    window.DRM_WALK.open(r, {
+      esc,
+      getPos: () => state.pos,
+      landPoint: (x) => ({ lat: LANDS[x.land].lat, lng: LANDS[x.land].lng }),
+      landName: (x) => LANDS[x.land].name,
+      rideLocation,
+      critter: () => C.svg(C.forRide(r.id), { size: 64, wink: true }),
+      arrived: (x) => toast(`You made it to ${x.name}!`),
+    });
+  }
+
   function celebrate(r) {
     const pop = $("#pop");
     pop.innerHTML = `<div class="bubble">${C.svg(state.day.ridden.length - 1, { size: 110, wink: true })}+1 for your stack!<div class="muted">${esc(r.name)}</div></div>`;
