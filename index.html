@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Ride Mapper</title>
+<meta name="description" content="Live Disneyland wait times and the closest, shortest-line ride for your family.">
+<meta name="theme-color" content="#1d2a5c">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Ride Mapper">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;800&family=Nunito:wght@400;600;700&display=swap">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header class="top">
+  <div class="top-row">
+    <h1 class="brand"><span id="brandCritter"></span>Ride Mapper</h1>
+    <button id="locBtn" class="chip" type="button" aria-pressed="false">Use my location</button>
+  </div>
+  <div class="seg" role="radiogroup" aria-label="Which park">
+    <button type="button" role="radio" data-park="DL" id="park-DL">Disneyland</button>
+    <button type="button" role="radio" data-park="DCA" id="park-DCA">California Adventure</button>
+    <button type="button" role="radio" data-park="BOTH" id="park-BOTH">Both</button>
+  </div>
+  <div class="top-row small">
+    <label class="toggle"><input type="checkbox" id="llToggle"><span>Lightning Lane</span></label>
+    <label class="toggle"><input type="checkbox" id="scaryToggle"><span>Skip scary rides</span></label>
+    <span id="updated" class="muted"></span>
+  </div>
+</header>
+
+<div id="banner" class="banner" hidden></div>
+
+<main>
+  <section id="tab-now" class="tab">
+    <div id="alerts" class="alerts"></div>
+    <h2 class="sec">Go next</h2>
+    <p id="nowHint" class="muted"></p>
+    <ol id="nextList" class="cards"></ol>
+    <div id="llBox" hidden>
+      <h2 class="sec">Lightning Lane picks</h2>
+      <p class="muted">These rides save you the most time with Lightning Lane right now.</p>
+      <ol id="llList" class="cards compact"></ol>
+      <div id="llBookings"></div>
+    </div>
+    <h2 class="sec">Shows and parades today</h2>
+    <ul id="showList" class="plain"></ul>
+    <h2 class="sec">Today's stack</h2>
+    <div id="stack" class="stack"></div>
+    <p class="muted done-line" id="doneLine"></p>
+  </section>
+
+  <section id="tab-rides" class="tab" hidden>
+    <div class="filters">
+      <input id="rideSearch" type="search" placeholder="Search rides" aria-label="Search rides">
+      <select id="rideSort" aria-label="Sort rides">
+        <option value="total">Closest + shortest</option>
+        <option value="wait">Shortest wait</option>
+        <option value="walk">Closest</option>
+        <option value="name">A to Z</option>
+      </select>
+    </div>
+    <ul id="rideList" class="rows"></ul>
+  </section>
+
+  <section id="tab-plan" class="tab" hidden>
+    <h2 class="sec">Trip days</h2>
+    <p class="muted">Tap the days you'll be at the parks, then pick a park for each day.</p>
+    <div class="cal-head">
+      <button type="button" id="calPrev" class="chip" aria-label="Previous month">‹</button>
+      <strong id="calTitle"></strong>
+      <button type="button" id="calNext" class="chip" aria-label="Next month">›</button>
+    </div>
+    <div id="calGrid" class="cal"></div>
+    <ul id="tripList" class="plain"></ul>
+
+    <h2 class="sec">Your kids</h2>
+    <div id="kidsBox" class="kids"></div>
+    <button type="button" id="addKid" class="chip">Add a kid</button>
+
+    <h2 class="sec">Alerts</h2>
+    <label class="toggle"><input type="checkbox" id="alertToggle"><span>Alert me about short lines and parades</span></label>
+    <p class="muted">On iPhone, alerts show while Ride Mapper is open. Add it to your Home Screen (Share, then Add to Home Screen) for the best experience.</p>
+
+    <h2 class="sec">Reset</h2>
+    <button type="button" id="resetToday" class="chip">Clear today's rides and skips</button>
+  </section>
+
+  <section id="tab-eat" class="tab" hidden>
+    <h2 class="sec">Best meals for kids</h2>
+    <p class="muted">Picked from family reviews on Laughing Place, MickeyVisit and MiceChat. Book table service and character meals ahead in the Disneyland app.</p>
+    <ul id="eatList" class="rows"></ul>
+  </section>
+</main>
+
+<nav class="tabs" aria-label="Sections">
+  <button type="button" data-tab="now" class="on">Now</button>
+  <button type="button" data-tab="rides">Rides</button>
+  <button type="button" data-tab="plan">Plan</button>
+  <button type="button" data-tab="eat">Eat</button>
+</nav>
+
+<dialog id="rideDlg" class="sheet">
+  <form method="dialog" class="sheet-x"><button aria-label="Close">×</button></form>
+  <div id="rideDlgBody"></div>
+</dialog>
+
+<div id="toast" class="toast" role="status" hidden></div>
+<div id="pop" class="pop" hidden></div>
+
+<p class="credit">Wait times from <a href="https://themeparks.wiki" target="_blank" rel="noopener">ThemeParks.wiki</a>. Not affiliated with Disney.</p>
+
+<script src="data.js"></script>
+<script src="critters.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
