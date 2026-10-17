@@ -88,6 +88,10 @@
     <label class="toggle"><input type="checkbox" id="alertToggle"><span>Alert me about short lines and parades</span></label>
     <p class="muted">On iPhone, alerts show while Ride Mapper is open. Add it to your Home Screen (Share, then Add to Home Screen) for the best experience.</p>
 
+    <h2 class="sec">3D park view</h2>
+    <p class="muted">The walking map shows the real park in 3D with a Google Maps key. Leave this blank to use the site's key.</p>
+    <input id="googleKey" type="text" autocomplete="off" spellcheck="false" placeholder="Google Maps key (optional)" aria-label="Google Maps key" class="keybox">
+
     <h2 class="sec">Reset</h2>
     <button type="button" id="resetToday" class="chip">Clear today's rides and skips</button>
   </section>
@@ -116,6 +120,7 @@
 
 <p class="credit">Wait times from <a href="https://themeparks.wiki" target="_blank" rel="noopener">ThemeParks.wiki</a>. Not affiliated with Disney.</p>
 
+<script src="config.js"></script>
 <script src="data.js"></script>
 <script src="critters.js"></script>
 <script src="walk.js"></script>

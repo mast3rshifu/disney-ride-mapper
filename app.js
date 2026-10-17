@@ -457,6 +457,7 @@
       rideLocation,
       critter: () => C.svg(C.forRide(r.id), { size: 64, wink: true }),
       arrived: (x) => toast(`You made it to ${x.name}!`),
+      googleKey: () => store.get("googleKey", "") || (window.DRM_CONFIG && window.DRM_CONFIG.googleMapsKey) || "",
     });
   }
 
@@ -513,6 +514,7 @@
       store.set("kids", state.kids); render();
     }
     else if (t.id === "rideSort") renderRides();
+    else if (t.id === "googleKey") { store.set("googleKey", t.value.trim()); toast(t.value.trim() ? "3D park view key saved on this phone." : "3D key removed."); }
   });
   $("#rideSearch").addEventListener("input", renderRides);
 
@@ -526,6 +528,7 @@
   }
 
   // ---------- start ----------
+  try { $("#googleKey").value = store.get("googleKey", ""); } catch (e) { /* field missing */ }
   $("#brandCritter").innerHTML = C.svg(0, { size: 34, wink: true });
   render(); renderPlan();
   loadLive(); loadSchedules();

@@ -18,6 +18,9 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
+      - name: Build walkway map from OpenStreetMap
+        run: node scripts/build-paths.mjs
+        continue-on-error: true
       - uses: actions/configure-pages@v5
         with:
           enablement: true
